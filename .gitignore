@@ -27,7 +27,6 @@ venv/
 *.env
 
 # --- Ollama / local models ---
-models/
 *.gguf
 
 # --- Uploaded statements (user data, never commit) ---
