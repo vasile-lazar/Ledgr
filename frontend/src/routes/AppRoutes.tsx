@@ -9,8 +9,6 @@ import Upload from '../pages/Upload';
 import Statements from '../pages/Statements';
 import Transactions from '../pages/Transactions';
 import Budgets from '../pages/Budgets';
-import Analytics from '../pages/Analytics';
-import AIInsights from '../pages/AIInsights';
 import Profile from '../pages/Profile';
 import NotFound from '../pages/NotFound';
 
@@ -28,8 +26,6 @@ export default function AppRoutes() {
        <Route path="/statements" element={<Statements onNavigate={onNavigate} />} />
        <Route path="/transactions" element={<Transactions />} />
        <Route path="/budgets" element={<Budgets />} />
-       <Route path="/analytics" element={<Analytics />} />
-       <Route path="/insights" element={<AIInsights />} />
        <Route path="/profile" element={<Profile />} />
       </Route>
       <Route path="*" element={<NotFound onNavigate={onNavigate} />} />
