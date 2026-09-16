@@ -29,7 +29,7 @@ models/
 *.gguf
 
 # --- Uploaded statements (user data, never commit) ---
-data/uploads/
+*.pdf
 
 # --- OS / Editor ---
 .DS_Store

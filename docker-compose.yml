@@ -1,0 +1,82 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: ledgr_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ledgr_user
+      POSTGRES_PASSWORD: ledgr_password
+      POSTGRES_DB: ledgr_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ledgr_pgdata:/var/lib/postgresql/data
+
+  ollama:
+    image: ollama/ollama
+    container_name: ledgr_ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ledgr_ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  python-service:
+    build:
+      context: ./ingestion
+      dockerfile: Dockerfile
+    container_name: ledgr_python
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ledgr_db
+      DB_USER: ledgr_user
+      DB_PASSWORD: ledgr_password
+      OLLAMA_HOST: http://ollama:11434
+    depends_on:
+      - postgres
+      - ollama
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ledgr_backend
+    restart: unless-stopped
+    ports:
+      - "5134:5134"
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      AUTH_PEPPER: ${AUTH_PEPPER}
+      PythonServiceUrl: http://python-service:8000
+      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=ledgr_db;Username=ledgr_user;Password=ledgr_password"
+    depends_on:
+      - postgres
+      - python-service
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ledgr_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:5134
+    depends_on:
+      - backend
+
+volumes:
+  ledgr_pgdata:
+  ledgr_ollama_data:
