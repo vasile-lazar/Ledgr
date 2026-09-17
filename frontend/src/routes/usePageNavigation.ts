@@ -13,4 +13,10 @@ insights: PATHS.APP.INSIGHTS,
 profile: PATHS.APP.PROFILE,
 notifications: PATHS.APP.NOTIFICATIONS
 };
-export function usePageNavigation() { const navigate = useNavigate(); return (page: Page) => navigate(pagePaths[page]); }
+export function usePageNavigation(): (page: Page) => void {
+  const navigate = useNavigate();
+
+  return (page: Page) => {
+    void navigate(pagePaths[page]);
+  };
+}
