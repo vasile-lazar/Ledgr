@@ -1,14 +1,14 @@
 import { Button } from '../components/ui/Button';
 import Table, { TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
-import { useState } from "react";
-import { Upload, CheckCircle, Loader2, FileText, X } from "lucide-react";
+import { useRef, useState } from "react";
+import { Upload, CheckCircle, Loader2, FileText, X, Clipboard } from "lucide-react";
 import { transactions } from "../data/mock";
 import type { Page } from "../data/mock";
 
 type Stage = "idle" | "uploading" | "ocr" | "categorizing" | "done";
 
 interface UploadProps {
-  onNavigate: (page: Page) => void;
+  onNavigate?: (page: Page) => void;
 }
 
 const stages: { key: Stage; label: string; desc: string }[] = [
@@ -19,9 +19,12 @@ const stages: { key: Stage; label: string; desc: string }[] = [
 ];
 
 export default function UploadPage({ onNavigate }: UploadProps) {
+  const navigate = onNavigate ?? (() => undefined);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [stage, setStage] = useState<Stage>("idle");
   const [dragging, setDragging] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [textInput, setTextInput] = useState("");
 
   const simulate = (name: string) => {
     setFileName(name);
@@ -29,6 +32,18 @@ export default function UploadPage({ onNavigate }: UploadProps) {
     stageOrder.forEach((s, i) => {
       setTimeout(() => setStage(s), i * 1400);
     });
+  };
+
+  const handleFileSelection = (file?: File) => {
+    if (!file) return;
+    simulate(file.name);
+  };
+
+  const handleTextSubmit = () => {
+    if (!textInput.trim()) return;
+    setFileName("Paste from text input");
+    setStage("uploading");
+    setTimeout(() => setStage("done"), 1400);
   };
 
   const stageIdx = stages.findIndex(s => s.key === stage);
@@ -47,24 +62,80 @@ export default function UploadPage({ onNavigate }: UploadProps) {
                       e.preventDefault();
                       setDragging(false);
                       const file = e.dataTransfer.files[0];
-                      if (file) simulate(file.name);
+                      handleFileSelection(file);
                     }}
-                    className={`border-2 border-dashed rounded-3xl py-32 px-12 min-h-[420px] flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
-                        dragging ? "border-[#10b981] bg-[#10b981]/5 scale-[0.99]" : "border-border bg-card hover:border-primary/50"
+                    className={`border-2 border-dashed rounded-3xl py-8 px-6 min-h-[620px] flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
+                        dragging ? "border-primary bg-primary/5 scale-[0.99]" : "border-border bg-card hover:border-primary/50"
                     }`}
-                    onClick={() => simulate("BT_Statement_Ian_2024.pdf")}
                 >
-                  <div className="w-20 h-20 rounded-3xl bg-muted flex items-center justify-center mb-6 shadow-sm">
-                    <Upload size={36} className="text-muted-foreground" />
+                  <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mb-6 shadow-sm">
+                    <Upload size={36} className="text-primary" />
                   </div>
                   <div className="text-xl font-semibold text-foreground mb-2">
                     {dragging ? "Drop here..." : "Drop PDF here"}
                   </div>
-                  <div className="text-sm text-muted-foreground mb-6">sau</div>
-                  <Button variant="primary" size="custom" className="px-7 py-3 rounded-xl text-sm font-medium shadow-sm">
-                    Browse files
-                  </Button>
-                  <div className="mt-8 text-xs text-muted-foreground font-medium">PDF, CSV · Max 20MB</div>
+                  <div className="text-sm text-muted-foreground mb-6">or</div>
+
+                  <div className="flex flex-col items-center gap-3 w-full max-w-sm">
+                    <input
+                      ref={inputRef}
+                      type="file"
+                      className="hidden"
+                      onChange={(e) => handleFileSelection(e.target.files?.[0])}
+                      accept=".pdf,.csv,.txt"
+                    />
+                    <Button
+                      type="button"
+                      variant="primary"
+                      size="custom"
+                      onClick={() => inputRef.current?.click()}
+                      className="w-full px-7 py-3 rounded-xl text-sm font-medium shadow-sm"
+                    >
+                      Browse files
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="custom"
+                      onClick={() => setTextInput((current) => current || '2024-01-15;Kaufland;-287.50;Groceries\n2024-01-14;Salary — Accenture;8500.00;Income')}
+                      className="w-full px-7 py-3 rounded-xl text-sm font-medium"
+                    >
+                      Add plain text
+                    </Button>
+                  </div>
+
+                  <div className="mt-8 text-xs text-muted-foreground font-medium">PDF, CSV, TXT · Max 20MB</div>
+
+                  {textInput && (
+                    <div className="mt-6 w-full max-w-md rounded-2xl border border-border bg-muted/20 p-3 text-left">
+                      <div className="mb-2 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2 text-[12px] font-medium text-foreground">
+                          <Clipboard size={13} /> Plain text
+                        </div>
+                        <Button
+                          type="button"
+                          variant="unstyled"
+                          size="custom"
+                          onClick={() => setTextInput('')}
+                          className="text-muted-foreground hover:text-foreground"
+                        >
+                          Clear
+                        </Button>
+                      </div>
+                      <textarea
+                        value={textInput}
+                        onChange={(e) => setTextInput(e.target.value)}
+                        placeholder="Paste transactions here..."
+                        className="min-h-[110px] w-full resize-none rounded-xl border border-border bg-background px-3 py-2 text-[12px] text-foreground outline-none focus:border-primary"
+                      />
+                      <div className="mt-3 flex justify-end">
+                        <Button type="button" variant="primary" size="custom" onClick={handleTextSubmit} className="px-4 py-2 rounded-lg text-[12px] font-medium">
+                          Parse text
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
             ) : (
                 <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
@@ -91,21 +162,21 @@ export default function UploadPage({ onNavigate }: UploadProps) {
                       const active = stages[stageIdx]?.key === s.key;
                       return (
                           <div key={s.key} className={`flex items-center gap-4 p-4 rounded-xl border transition-colors ${
-                              active ? "border-[#10b981]/30 bg-[#10b981]/5" : "border-border"
+                              active ? "border-primary/30 bg-primary/5" : "border-border"
                           }`}>
                             <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
-                                completed ? "bg-[#10b981]" : active ? "border-2 border-[#10b981]" : "border border-border"
+                                completed ? "bg-primary" : active ? "border-2 border-primary" : "border border-border"
                             }`}>
                               {completed ? (
-                                  <CheckCircle size={14} className="text-white" />
+                                  <CheckCircle size={14} className="text-primary-foreground" />
                               ) : active ? (
-                                  <Loader2 size={12} className="text-[#10b981] animate-spin" />
+                                  <Loader2 size={12} className="text-primary animate-spin" />
                               ) : (
                                   <span className="text-[10px] text-muted-foreground font-mono">{i + 1}</span>
                               )}
                             </div>
                             <div className="flex-1">
-                              <div className={`text-[13px] font-medium ${active ? "text-[#10b981]" : completed ? "text-foreground" : "text-muted-foreground"}`}>
+                              <div className={`text-[13px] font-medium ${active ? "text-primary" : completed ? "text-foreground" : "text-muted-foreground"}`}>
                                 {s.label}
                               </div>
                               {(active || completed) && (
@@ -124,16 +195,16 @@ export default function UploadPage({ onNavigate }: UploadProps) {
           {stage === "done" && (
               <div className="lg:col-span-7 bg-card border border-border rounded-2xl p-6 space-y-4">
                 <div className="text-[14px] font-semibold text-foreground">
-                  Preview — {transactions.length} tranzacții detectate
+                  Preview — {transactions.length} detected transactions
                 </div>
                 <div className="rounded-xl border border-border overflow-hidden">
                   <Table caption="Statement transaction preview" density="compact">
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Data</TableHead>
+                        <TableHead>Date</TableHead>
                         <TableHead>Merchant</TableHead>
-                        <TableHead>Categorie</TableHead>
-                        <TableHead className="text-right text-muted-foreground font-medium">Sumă</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead className="text-right text-muted-foreground font-medium">Amount</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -144,7 +215,7 @@ export default function UploadPage({ onNavigate }: UploadProps) {
                             <TableCell>
                               <span className="px-2 py-0.5 rounded-md bg-muted text-muted-foreground text-[11px]">{tx.category}</span>
                             </TableCell>
-                            <TableCell className={`text-right font-mono ${tx.amount > 0 ? "text-[#10b981]" : "text-foreground"}`}>
+                            <TableCell className={`text-right font-mono ${tx.amount > 0 ? "text-primary" : "text-foreground"}`}>
                               {tx.amount > 0 ? "+" : ""}{tx.amount.toFixed(2)} RON
                             </TableCell>
                           </TableRow>
@@ -154,7 +225,7 @@ export default function UploadPage({ onNavigate }: UploadProps) {
                 </div>
                 <div className="flex gap-3 pt-2">
                   <Button variant="primary" size="custom"
-                          onClick={() => onNavigate("transactions")}
+                          onClick={() => navigate("transactions")}
                           className="flex-1 py-3 rounded-xl text-[13.5px] font-medium"
                   >
                     Save Statement

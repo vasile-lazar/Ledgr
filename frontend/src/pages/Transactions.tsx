@@ -1,5 +1,6 @@
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
+import ActionMenu, { type ActionMenuItem } from '../components/ui/ActionMenu';
 import Table, { TableHeader, TableBody, TableRow, TableHead, TableCell, TableEmptyState } from "../components/ui/Table";
 import { useState } from "react";
 import { Search, Filter, Download, Pencil, Trash2, X, ChevronUp, ChevronDown } from "lucide-react";
@@ -23,6 +24,7 @@ export default function Transactions() {
   const [sortKey, setSortKey] = useState<SortKey>("date");
   const [sortAsc, setSortAsc] = useState(false);
   const [selectedTx, setSelectedTx] = useState<typeof transactions[0] | null>(null);
+  const [openMenu, setOpenMenu] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const perPage = 8;
 
@@ -55,37 +57,37 @@ export default function Transactions() {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="font-display text-[28px] font-light text-foreground tracking-tight">Transactions</h2>
-          <p className="text-[13.5px] text-muted-foreground mt-1">{filtered.length} tranzacții găsite</p>
-        </div>
-        <Button variant="outline" size="custom" className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13.5px] font-medium">
-          <Download size={14} /> Export CSV
-        </Button>
-      </div>
+      
 
-      {/* Filters */}
-      <div className="flex gap-3 mb-5 flex-wrap">
-        <div className="flex items-center gap-2 bg-card border border-border rounded-xl px-3 py-2">
-          <Search size={13} className="text-muted-foreground" />
-          <Input variant="bare" aria-label="Search transactions"
-            value={search}
-            onChange={e => { setSearch(e.target.value); setPage(1); }}
-            placeholder="Caută merchant..."
-            className="text-[13px] w-44"
+      <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <div className="flex items-center gap-3 flex-wrap rounded-xl border border-border bg-card p-1.5 shadow-sm">
+        <div className="flex h-[42px] items-center gap-2 rounded-lg bg-background px-3 min-w-[180px]">
+            <Search size={13} className="text-muted-foreground shrink-0" />
+            <Input aria-label="Search transactions"
+              value={search}
+              onChange={e => { setSearch(e.target.value); setPage(1); }}
+              placeholder="Search merchant..."
+            variant="bare"
+            className="text-[13px] w-32 border-0 bg-transparent px-0 py-0"
           />
         </div>
-        <div className="flex items-center gap-1 bg-card border border-border rounded-xl px-3 py-2">
+
+        <div className="relative flex h-[42px] min-w-[180px] items-center rounded-lg border border-border bg-card px-3 shadow-sm transition-colors hover:border-border/80">
           <Filter size={13} className="text-muted-foreground shrink-0" />
           <select
             value={catFilter}
             onChange={e => { setCatFilter(e.target.value); setPage(1); }}
-            className="bg-transparent text-[13px] text-foreground outline-none ml-1.5"
+            className="h-full flex-1 appearance-none bg-transparent pr-7 text-[13px] text-foreground outline-none"
           >
-            {categories.map(c => <option key={c} value={c} className="bg-card">{c === "all" ? "Toate categoriile" : c}</option>)}
+            {categories.map(c => <option key={c} value={c} className="bg-card">{c === "all" ? "All categories" : c}</option>)}
           </select>
+          <ChevronDown size={12} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
         </div>
+      </div>
+
+        <Button variant="outline" size="custom" className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13.5px] font-medium self-start md:self-auto">
+          <Download size={14} /> Export CSV
+        </Button>
       </div>
 
       {/* Table */}
@@ -130,15 +132,24 @@ export default function Transactions() {
                 <TableCell className={`text-right font-mono font-medium ${tx.amount > 0 ? "text-[#10b981]" : "text-foreground"}`}>
                   {tx.amount > 0 ? "+" : ""}{tx.amount.toFixed(2)} RON
                 </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1 justify-end opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100" onClick={e => e.stopPropagation()}>
-                    <Button aria-label="Edit transaction" variant="unstyled" size="custom" className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-muted-foreground hover:bg-muted">
-                      <Pencil size={12} />
-                    </Button>
-                    <Button aria-label="Delete" variant="unstyled" size="custom" className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-[#ef4444] hover:bg-[#ef4444]/10">
-                      <Trash2 size={12} />
-                    </Button>
-                  </div>
+                <TableCell className="text-right relative" onClick={e => e.stopPropagation()}>
+                  <Button
+                    aria-label={`Actions for ${tx.merchant}`}
+                    variant="unstyled"
+                    size="custom"
+                    className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-muted-foreground hover:bg-muted"
+                    onClick={() => setOpenMenu(openMenu === tx.id ? null : tx.id)}
+                  >
+                    <Pencil size={12} />
+                  </Button>
+
+                  <ActionMenu
+                    open={openMenu === tx.id}
+                    items={[
+                      { label: 'Edit', icon: <Pencil size={12} />, onClick: () => { setSelectedTx(tx); setOpenMenu(null); } },
+                      { label: 'Delete', icon: <Trash2 size={12} />, onClick: () => { setOpenMenu(null); setSelectedTx(null); }, danger: true },
+                    ] as ActionMenuItem[]}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -148,7 +159,7 @@ export default function Transactions() {
         {/* Pagination */}
         <div className="flex items-center justify-between px-5 py-3 border-t border-border bg-muted">
           <span className="text-[12px] text-muted-foreground">
-            {filtered.length === 0 ? 0 : (page - 1) * perPage + 1}–{Math.min(page * perPage, filtered.length)} din {filtered.length}
+            {filtered.length === 0 ? 0 : (page - 1) * perPage + 1}–{Math.min(page * perPage, filtered.length)} of {filtered.length}
           </span>
           <div className="flex items-center gap-1">
             {Array.from({ length: totalPages }, (_, i) => (
@@ -156,7 +167,7 @@ export default function Transactions() {
                 key={i}
                 onClick={() => setPage(i + 1)}
                 className={`w-7 h-7 rounded-lg text-[12px] font-medium transition-colors ${
-                  page === i + 1 ? "bg-[#10b981] text-white" : "text-muted-foreground hover:text-muted-foreground hover:bg-muted"
+                  page === i + 1 ? "bg-primary text-accent" : "text-muted-foreground hover:text-muted-foreground hover:bg-muted"
                 }`}
               >
                 {i + 1}
@@ -184,10 +195,10 @@ export default function Transactions() {
             </div>
             <div className="space-y-3">
               {[
-                { label: "Sumă", value: `${selectedTx.amount > 0 ? "+" : ""}${selectedTx.amount.toFixed(2)} RON`, mono: true, color: selectedTx.amount > 0 ? "#10b981" : "var(--foreground)" },
-                { label: "Categorie", value: selectedTx.category },
-                { label: "Data", value: selectedTx.date, mono: true },
-                { label: "Note", value: "—" },
+                { label: "Amount", value: `${selectedTx.amount > 0 ? "+" : ""}${selectedTx.amount.toFixed(2)} RON`, mono: true, color: selectedTx.amount > 0 ? "#10b981" : "var(--foreground)" },
+                { label: "Category", value: selectedTx.category },
+                { label: "Date", value: selectedTx.date, mono: true },
+                { label: "Notes", value: "—" },
               ].map(({ label, value, mono, color }) => (
                 <div key={label} className="flex justify-between items-center py-2.5 border-b border-border last:border-0">
                   <span className="text-[12px] text-muted-foreground">{label}</span>
