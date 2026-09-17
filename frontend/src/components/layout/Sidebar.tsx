@@ -1,6 +1,4 @@
 import {
-    Bot,
-    ChartNoAxesCombined,
     CreditCard,
     FileText,
     LayoutDashboard,
@@ -25,14 +23,11 @@ const navItems: NavItem[] = [
     { label: 'Statements', path: PATHS.APP.STATEMENTS, icon: FileText },
     { label: 'Transactions', path: PATHS.APP.TRANSACTIONS, icon: CreditCard },
     { label: 'Budgets', path: PATHS.APP.BUDGETS, icon: Target },
-    { label: 'Analytics', path: PATHS.APP.ANALYTICS, icon: ChartNoAxesCombined },
-    { label: 'AI Insights', path: PATHS.APP.INSIGHTS, icon: Bot },
 ];
 
 export const Sidebar: React.FC = () => {
     return (
         <aside className="w-16 md:w-60 bg-sidebar border-r border-sidebar-border flex flex-col fixed inset-y-0 left-0 z-20 transition-colors">
-            {/* Header / Brand area */}
             <div className="p-6 border-b border-sidebar-border flex items-center justify-center">
                 <span className="font-bold text-lg md:text-3xl text-sidebar-accent-foreground text-center tracking-wide ">
                     Ledgr
