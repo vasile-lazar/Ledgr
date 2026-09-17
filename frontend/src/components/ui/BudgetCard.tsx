@@ -31,7 +31,7 @@ export function BudgetCard({
                     )}
                     <div>
                         <div className="text-[13.5px] font-semibold text-foreground">{category}</div>
-                        <div className="text-[11px] text-muted-foreground">Lunar</div>
+                        <div className="text-[11px] text-muted-foreground">Monthly</div>
                     </div>
                 </div>
                 {over && <AlertTriangle size={14} className="text-[#ef4444] shrink-0 mt-1" />}
@@ -65,7 +65,7 @@ export function BudgetCard({
                             : "text-muted-foreground"
                 }`}
             >
-                {pct}% utilizat {over ? "— depășit!" : ""}
+                {pct}% used {over ? "— over budget!" : ""}
             </div>
         </Card>
     );
