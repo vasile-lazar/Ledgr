@@ -19,4 +19,24 @@ public class BusinessLogic
     {
         return new AuthLogic(_context);
     }
+
+    public IStatementLogic GetStatementLogic()
+    {
+        return new StatementLogic(_context, _httpClient);
+    }
+
+    public ITransactionLogic GetTransactionLogic()
+    {
+        return new TransactionLogic(_context);
+    }
+
+    public IBudgetLogic GetBudgetLogic()
+    {
+        return new BudgetLogic(_context);
+    }
+
+    public IAnalyticsLogic GetAnalyticsLogic()
+    {
+        return new AnalyticsLogic(_context);
+    }
 }
