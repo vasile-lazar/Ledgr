@@ -15,9 +15,8 @@ public class TransactionController : ControllerBase
         _transactionLogic = businessLogic.GetTransactionLogic();
     }
     
-    private int CurrentUserId = 2;
-    // private int CurrentUserId =>
-    //     int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int CurrentUserId =>
+        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     
     [HttpGet]
     public IActionResult GetTransactions()
