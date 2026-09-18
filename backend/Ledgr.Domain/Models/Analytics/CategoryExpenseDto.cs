@@ -5,5 +5,5 @@ namespace Ledgr.Domain.Models.Analytics;
 public class CategoryExpenseDto
 {
     public TransactionType Category { get; set; }
-    public int Expense { get; set; }
+    public decimal Expense { get; set; }
 }

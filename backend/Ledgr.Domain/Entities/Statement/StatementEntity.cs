@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Ledgr.Domain.Entities.User;
 
 namespace Ledgr.Domain.Entities.Statement;
 
@@ -17,4 +18,10 @@ public class StatementEntity
 
     [Required]
     public int Transactions { get; set; }
+    
+    [Required]
+    public int UserId { get; set; }
+    
+    [ForeignKey("UserId")]
+    public UserEntity User { get; set; } = null!;
 }
