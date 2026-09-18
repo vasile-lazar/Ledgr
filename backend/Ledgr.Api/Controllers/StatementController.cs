@@ -16,10 +16,9 @@ public class StatementController : ControllerBase
     {
         _statementLogic = businessLogic.GetStatementLogic();
     }
-
-    private int CurrentUserId = 2;
-    // private int CurrentUserId =>
-    //     int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    
+    private int CurrentUserId =>
+        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpPost("upload/text")]
     public async Task<IActionResult> Upload([FromBody] UploadStatementDto dto)

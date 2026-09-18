@@ -15,9 +15,8 @@ public class AnalyticsController : ControllerBase
         _analyticsLogic = businessLogic.GetAnalyticsLogic();
     }
 
-    private int CurrentUserId = 2;
-    // private int CurrentUserId =>
-    //     int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int CurrentUserId =>
+        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet("income")]
     public IActionResult GetLastSixMonthsIncome()
