@@ -1,5 +1,5 @@
 import json
-from fastapi import requests, FastAPI
+import requests
 from pydantic import BaseModel
 
 
@@ -58,16 +58,19 @@ Statement text:
 
 class ParseRequest(BaseModel):
     statement_text: str
+    default_year: int
 
 
-def parse_statement(statement_text: str) -> list[dict]:
+def parse_statement(statement_text: str, default_year: int) -> list[dict]:
     line_count = len([line for line in statement_text.strip().split("\n") if line.strip()])
 
     prompt = PROMPT_TEMPLATE.format(statement_text=statement_text) + f"""
 
+The dates above have no year specified. Assume year {default_year} unless a
+different year is explicitly written in the statement text.
+
 IMPORTANT: The statement text above contains exactly {line_count} transaction lines.
 Your output array must contain exactly {line_count} objects — one per line, in order.
-Do not stop early. Do not skip any line.
 """
 
     response = requests.post(
