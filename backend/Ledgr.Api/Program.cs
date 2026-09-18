@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,7 +16,11 @@ var secret = Environment.GetEnvironmentVariable("JWT_SECRET")
 var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "Ledgr";
 var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "Ledgr";
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
