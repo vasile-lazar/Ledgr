@@ -88,4 +88,55 @@ public class AuthActions
             }
         };
     }
+    
+    protected ServiceResponse UpdateProfileAction(int userId, UpdateProfileDto dto)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+        if (user == null)
+            return new ServiceResponse { IsSuccess = false, Message = "User not found." };
+
+        var emailTaken = _context.Users.Any(u => u.Email == dto.Email && u.Id != userId);
+        if (emailTaken)
+            return new ServiceResponse { IsSuccess = false, Message = "Email already in use." };
+
+        user.Username = dto.Username;
+        user.Email = dto.Email;
+        _context.SaveChanges();
+
+        return new ServiceResponse
+        {
+            IsSuccess = true,
+            Data = new AuthResponseDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+            }
+        };
+    }
+
+    protected ServiceResponse ChangePasswordAction(int userId, ChangePasswordDto dto)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+        if (user == null)
+            return new ServiceResponse { IsSuccess = false, Message = "User not found." };
+
+        if (dto.NewPassword != dto.ConfirmNewPassword)
+            return new ServiceResponse { IsSuccess = false, Message = "New passwords do not match." };
+
+        var currentValid = PasswordHasher.Verify(
+            dto.CurrentPassword, user.PasswordHash, user.Salt, _pepper, user.Id, user.CreatedAtTimestamp
+        );
+        if (!currentValid)
+            return new ServiceResponse { IsSuccess = false, Message = "Current password is incorrect." };
+
+        var newSalt = PasswordHasher.GenerateSalt();
+        var newHash = PasswordHasher.Hash(dto.NewPassword, newSalt, _pepper, user.Id, user.CreatedAtTimestamp);
+
+        user.Salt = newSalt;
+        user.PasswordHash = newHash;
+        _context.SaveChanges();
+
+        return new ServiceResponse { IsSuccess = true, Message = "Password updated." };
+    }
 }

@@ -73,6 +73,13 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<LedgrDbContext>();
+    // Applies any pending migrations or creates the database if it doesn't exist
+    dbContext.Database.Migrate(); 
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
