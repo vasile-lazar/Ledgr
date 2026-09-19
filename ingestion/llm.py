@@ -1,10 +1,12 @@
 import json
+import os
+
 import requests
 from pydantic import BaseModel
 
 
-OLLAMA_HOST = "http://localhost:11434"
-MODEL_NAME = "llama3.1:8b"
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ledgr_ollama:11434")
+MODEL_NAME = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
 
 TRANSACTION_SCHEMA = {
     "type": "array",
@@ -59,7 +61,6 @@ Statement text:
 class ParseRequest(BaseModel):
     statement_text: str
     default_year: int
-
 
 def parse_statement(statement_text: str, default_year: int) -> list[dict]:
     line_count = len([line for line in statement_text.strip().split("\n") if line.strip()])
