@@ -1,5 +1,7 @@
-﻿using Ledgr.BusinessLogic.Interfaces;
+﻿using System.Security.Claims;
+using Ledgr.BusinessLogic.Interfaces;
 using Ledgr.Domain.Models.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ledgr.Api.Controllers;
@@ -14,7 +16,10 @@ public class AuthController : ControllerBase
     {
         _authLogic = businessLogic.GetAuthLogic();
     }
-
+    
+    private int CurrentUserId =>
+        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    
     [HttpPost("register")]
     public IActionResult Register([FromBody] RegisterDto dto)
     {
@@ -33,5 +38,25 @@ public class AuthController : ControllerBase
             return Unauthorized(response.Message);
 
         return Ok(response.Data);
+    }
+    
+    [Authorize]
+    [HttpPut("profile")]
+    public IActionResult UpdateProfile([FromBody] UpdateProfileDto dto)
+    {
+        var response = _authLogic.UpdateProfile(CurrentUserId, dto);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+        return Ok(response.Data);
+    }
+
+    [HttpPost("change-password")]
+    [Authorize]
+    public IActionResult ChangePassword([FromBody] ChangePasswordDto dto)
+    {
+        var response = _authLogic.ChangePassword(CurrentUserId, dto);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+        return Ok(response.Message);
     }
 }
