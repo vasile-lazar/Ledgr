@@ -3,15 +3,14 @@ import tempfile
 import requests
 import llm
 import pdf_extraction
-from fastapi import FastAPI, HTTPException, UploadFile, File
-
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 
 app = FastAPI()
 
 @app.post("/parse")
 def parse_endpoint(req: llm.ParseRequest):
     try:
-        transactions = llm.parse_statement(req.statement_text)
+        transactions = llm.parse_statement(req.statement_text, req.default_year)
     except requests.exceptions.ConnectionError:
         raise HTTPException(
             status_code=503,
@@ -34,7 +33,7 @@ def parse_endpoint(req: llm.ParseRequest):
 
 
 @app.post("/parse-pdf")
-async def parse_pdf_endpoint(file: UploadFile = File(...)):
+async def parse_pdf_endpoint(file: UploadFile = File(...), default_year: int = Form(...)):
     try:
         with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             tmp.write(await file.read())
@@ -44,7 +43,7 @@ async def parse_pdf_endpoint(file: UploadFile = File(...)):
         if not statement_text.strip():
             raise HTTPException(status_code=422, detail="No transaction table found in PDF.")
 
-        transactions = llm.parse_statement(statement_text)
+        transactions = llm.parse_statement(statement_text, default_year)
     except requests.exceptions.ConnectionError:
         raise HTTPException(status_code=503, detail="The AI model is unavailable — check that Ollama is running.")
     except requests.exceptions.Timeout:

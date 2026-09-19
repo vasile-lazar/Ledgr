@@ -62,7 +62,6 @@ class ParseRequest(BaseModel):
     statement_text: str
     default_year: int
 
-
 def parse_statement(statement_text: str, default_year: int) -> list[dict]:
     line_count = len([line for line in statement_text.strip().split("\n") if line.strip()])
 

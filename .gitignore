@@ -10,6 +10,8 @@ bin/
 obj/
 *.user
 *.suo
+appsettings.json
+appsettings.Development.json
 
 # --- Python / Parsing service ---
 __pycache__/
@@ -25,7 +27,6 @@ venv/
 *.env
 
 # --- Ollama / local models ---
-models/
 *.gguf
 
 # --- Uploaded statements (user data, never commit) ---
