@@ -1,17 +1,15 @@
-// src/components/layout/AppLayout.tsx
+import { Outlet } from 'react-router-dom';
+import { Sidebar } from '../components/layout/Sidebar';
+import { Header } from '../components/layout/Header';
+import React from "react";
 
-import { Outlet} from 'react-router-dom';
-import Sidebar from './Sidebar';
-import Header from './Header';
-
-export default function AppLayout() {
-    
+export const AppLayout: React.FC = () => {
     return (
         <div className="min-h-screen bg-background text-foreground flex transition-colors duration-200">
             <Sidebar />
 
             <div className="flex-1 flex flex-col ml-16 md:ml-60 min-w-0 min-h-screen">
-                <Header/>
+                <Header />
 
                 <main className="flex-1 overflow-y-auto">
                     <Outlet />
@@ -19,4 +17,4 @@ export default function AppLayout() {
             </div>
         </div>
     );
-}
+};

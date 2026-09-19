@@ -1,7 +1,11 @@
-import React from 'react';
 import { Card } from '../components/ui/Card';
-import { FileText, Target, ChartNoAxesCombined, Bot, ArrowUpRight } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import {
+    FileText,
+    Target,
+    ChartNoAxesCombined,
+    Bot,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 interface Feature {
     icon: LucideIcon;
@@ -11,33 +15,69 @@ interface Feature {
 }
 
 const features: Feature[] = [
-    { icon: Bot, title: 'LLM Auto-Categorization', desc: 'Automatic transaction tagging powered by specialized AI trained on financial records.', badge: 'AI Engine' },
-    { icon: ChartNoAxesCombined, title: 'Data Visualizations', desc: 'Interactive spending charts, merchant breakdowns, and monthly trends.', badge: 'Analytics' },
-    { icon: FileText, title: 'Bank Statement OCR', desc: 'Fast parsing for complex PDF bank statements, invoices, and digital receipts.', badge: 'OCR Parsing' },
-    { icon: Target, title: 'Budget Control', desc: 'Set monthly budget thresholds with real-time alerts when approaching limits.', badge: 'Management' }
+    {
+        icon: Bot,
+        title: 'AI Transaction Extraction',
+        desc: 'A local language model reads your statement text and extracts dates, merchants, amounts, and categories.',
+        badge: 'AI',
+    },
+    {
+        icon: FileText,
+        title: 'Text & PDF Statements',
+        desc: 'Paste statement text directly, or upload a PDF and let the app pull the transaction table out for you.',
+        badge: 'Parsing',
+    },
+    {
+        icon: ChartNoAxesCombined,
+        title: 'Spending Dashboard',
+        desc: 'Charts for income vs. expenses over time and spending broken down by category.',
+        badge: 'Analytics',
+    },
+    {
+        icon: Target,
+        title: 'Monthly Budgets',
+        desc: "Set a spending limit per category each month and track how much you've used.",
+        badge: 'Budgeting',
+    },
 ];
 
 export const FeaturesSection: React.FC = () => {
     return (
-        <section className="py-16 border-t border-border/60">
-            <div className="text-center space-y-3 mb-12">
-                <span className="text-xs font-mono font-bold uppercase tracking-widest text-primary">Capabilities</span>
-                <h2 className="text-3xl font-bold font-sans text-foreground">Everything you need to master your spending</h2>
+        <section className="w-full border-t border-border/60 py-16">
+            <div className="mb-12 text-center space-y-3">
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-primary">
+                    Capabilities
+                </span>
+
+                <h2 className="text-3xl font-bold font-sans text-foreground">
+                    What Ledgr actually does
+                </h2>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {features.map((f, i) => (
-                    <Card key={i} className="group p-6 space-y-4 hover:shadow-md hover:border-primary/50 transition-all">
+            <div className="grid w-full gap-6 md:grid-cols-2 lg:grid-cols-4">
+                {features.map((feature) => (
+                    <Card
+                        key={feature.title}
+                        className="group min-w-0 p-6 space-y-4 transition-all hover:border-primary/50 hover:shadow-md"
+                    >
                         <div className="flex items-center justify-between">
-                            <div className="p-3 rounded-xl bg-secondary text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                                <f.icon className="w-5 h-5 shrink-0" />
+                            <div className="shrink-0 rounded-xl bg-secondary p-3 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                                <feature.icon className="h-5 w-5" />
                             </div>
-                            <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
-                        <div className="space-y-2">
-                            <span className="text-[10px] font-mono tracking-wider text-muted-foreground uppercase">{f.badge}</span>
-                            <h3 className="font-semibold text-card-foreground text-base leading-snug">{f.title}</h3>
-                            <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
+
+                        <div className="min-w-0 space-y-2">
+                            <span className="text-[10px] font-mono tracking-wider text-muted-foreground uppercase">
+                                {feature.badge}
+                            </span>
+
+                            <h3 className="font-semibold text-card-foreground text-base leading-snug">
+                                {feature.title}
+                            </h3>
+
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                {feature.desc}
+                            </p>
                         </div>
                     </Card>
                 ))}

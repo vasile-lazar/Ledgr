@@ -18,11 +18,11 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-    { label: 'Dashboard', path: PATHS.APP.DASHBOARD, icon: LayoutDashboard },
-    { label: 'Upload Statement', path: PATHS.APP.UPLOAD, icon: Upload },
-    { label: 'Statements', path: PATHS.APP.STATEMENTS, icon: FileText },
-    { label: 'Transactions', path: PATHS.APP.TRANSACTIONS, icon: CreditCard },
-    { label: 'Budgets', path: PATHS.APP.BUDGETS, icon: Target },
+    { label: 'Dashboard', path: PATHS.app.dashboard, icon: LayoutDashboard },
+    { label: 'Upload Statement', path: PATHS.app.upload, icon: Upload },
+    { label: 'Statements', path: PATHS.app.statements, icon: FileText },
+    { label: 'Transactions', path: PATHS.app.transactions, icon: CreditCard },
+    { label: 'Budgets', path: PATHS.app.budgets, icon: Target },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -58,7 +58,7 @@ export const Sidebar: React.FC = () => {
             <div className="p-2 md:p-4 border-t border-sidebar-border">
                 <NavLink
                     aria-label="Log out"
-                    to={PATHS.PUBLIC.LANDING}
+                    to={PATHS.public.landing}
                     className="w-full flex items-center gap-3 text-left px-2 md:px-4 py-2 text-sm text-muted-foreground hover:text-destructive transition-colors"
                 >
                     <LogOut size={18} aria-hidden="true" /> <span className="hidden md:inline">Log out</span>

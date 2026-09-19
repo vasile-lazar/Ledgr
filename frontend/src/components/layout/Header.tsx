@@ -1,13 +1,14 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import ThemeToggle from "../ui/ThemeToggle.tsx";
+import { ThemeToggle } from "../ui/ThemeToggle.tsx";
 import { PATHS } from '../../routes/paths';
 
 import { Button } from '../ui/Button';
-import Avatar from '../ui/Avatar';
+import { Avatar } from '../ui/Avatar';
+import {useAuth} from "../../hooks/useAuth.ts";
 
-export const Topbar: React.FC = () => {
+export const Header: React.FC = () => {
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     return (
@@ -17,15 +18,13 @@ export const Topbar: React.FC = () => {
                 <Button
                     variant="ghost"
                     size="md"
-                    onClick={() => navigate(PATHS.APP.PROFILE)}
+                    onClick={() => navigate(PATHS.app.profile)}
                     className="flex items-center space-x-2  h-9"
                 >
-                    <Avatar name="Gondon" size="sm" className="ring-2 ring-background" />
-                    <span className="hidden sm:inline text-sm font-medium text-foreground pr-1">Gondon</span>
+                    <Avatar name={user!.username} size="sm" className="ring-2 ring-background" />
+                    <span className="hidden sm:inline text-sm font-medium text-foreground pr-1">{user!.username}</span>
                 </Button>
             </div>
         </header>
     );
 };
-
-export default Topbar;

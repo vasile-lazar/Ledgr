@@ -193,23 +193,12 @@
 }
 
 /* Smooth background and color transitions for UI elements */
-body,
-header,
-nav,
-aside,
-main,
-footer,
-div,
-button,
-a,
-input,
-select,
-textarea,
-span {
+body, header, nav, aside, main, footer, div, button, a, input, select, textarea, span {
   transition-property: background-color, border-color, color, fill, stroke, box-shadow;
   transition-duration: 300ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 
 body {
   background-color: var(--background);
@@ -234,4 +223,13 @@ button, a { touch-action: manipulation; }
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
+}
+html,
+body,
+#root,
+#root > div {
+  width: 100vw !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }

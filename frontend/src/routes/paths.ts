@@ -1,19 +1,16 @@
 export const PATHS = {
-    PUBLIC: {
-        LANDING: '/',
-        LOGIN: '/login',
-        REGISTER: '/register',
-        NOT_FOUND: '/404',
+    public: {
+        landing: '/',
+        login: '/login',
+        register: '/register',
+        notFound: '/404',
     },
-    APP: {
-        DASHBOARD: '/dashboard',
-        UPLOAD: '/upload',
-        STATEMENTS: '/statements',
-        TRANSACTIONS: '/transactions',
-        BUDGETS: '/budgets',
-        ANALYTICS: '/analytics',
-        INSIGHTS: '/insights',
-        PROFILE: '/profile',
-        NOTIFICATIONS: '/notifications',
+    app: {
+        dashboard: '/dashboard',
+        upload: '/upload',
+        statements: '/statements',
+        transactions: '/transactions',
+        budgets: '/budgets',
+        profile: '/profile',
     },
 } as const;
