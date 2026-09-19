@@ -59,7 +59,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       AUTH_PEPPER: ${AUTH_PEPPER}
       PythonServiceUrl: http://python-service:8000
-      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=ledgr_db;Username=ledgr_user;Password=ledgr_password"
+      DEFAULT_CONNECTION: "Host=postgres;Port=5432;Database=ledgr_db;Username=ledgr_user;Password=ledgr_password"
     depends_on:
       - postgres
       - python-service
