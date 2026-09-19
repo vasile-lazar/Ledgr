@@ -1,36 +1,56 @@
-import { Route, Routes } from 'react-router-dom';
-import AppLayout from '../components/layout/AppLayout';
-import Landing from '../pages/Landing';
-import Login from '../pages/Login';
-import Register from '../pages/Register';
-import Dashboard from '../pages/Dashboard';
-import Upload from '../pages/Upload';
-import Statements from '../pages/Statements';
-import Transactions from '../pages/Transactions';
-import Budgets from '../pages/Budgets';
-import Profile from '../pages/Profile';
-import NotFound from '../pages/NotFound';
-import { usePageNavigation } from './usePageNavigation';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AppLayout } from '../layout/AppLayout';
+import { AuthLayout } from '../layout/AuthLayout';
+import { Guard } from './Guard';
+import { PATHS } from './paths';
 
-export default function AppRoutes() {
- const onNavigate = usePageNavigation();
+import { Landing } from '../pages/Landing';
+import { Login } from '../pages/Login';
+import { Register } from '../pages/Register';
+import { Dashboard } from '../pages/Dashboard';
+import { UploadPage } from '../pages/UploadPage';
+import { Statements } from '../pages/Statements';
+import { Transactions } from '../pages/Transactions';
+import { Budgets } from '../pages/Budgets';
+import { Profile } from '../pages/Profile';
+import { NotFound } from '../pages/NotFound';
 
- return (
-   <Routes>
-     <Route path="/" element={<Landing />} />
-     <Route path="/login" element={<Login onNavigate={onNavigate} />} />
-     <Route path="/register" element={<Register onNavigate={onNavigate} />} />
+const router = createBrowserRouter([
+    { path: PATHS.public.landing, element: <Landing /> },
 
-     <Route element={<AppLayout />}>
-       <Route path="/dashboard" element={<Dashboard onNavigate={onNavigate} />} />
-       <Route path="/upload" element={<Upload onNavigate={onNavigate} />} />
-       <Route path="/statements" element={<Statements onNavigate={onNavigate} />} />
-       <Route path="/transactions" element={<Transactions />} />
-       <Route path="/budgets" element={<Budgets />} />
-       <Route path="/profile" element={<Profile />} />
-     </Route>
+    // Auth pages — redirect away if already logged in
+    {
+        element: <Guard publicOnly />,
+        children: [
+            {
+                element: <AuthLayout />,
+                children: [
+                    { path: PATHS.public.login, element: <Login /> },
+                    { path: PATHS.public.register, element: <Register /> },
+                ],
+            },
+        ],
+    },
 
-     <Route path="*" element={<NotFound onNavigate={onNavigate} />} />
-   </Routes>
- );
-}
+    // Authenticated app
+    {
+        element: <Guard requireAuth />,
+        children: [
+            {
+                element: <AppLayout />,
+                children: [
+                    { path: PATHS.app.dashboard, element: <Dashboard /> },
+                    { path: PATHS.app.upload, element: <UploadPage /> },
+                    { path: PATHS.app.statements, element: <Statements /> },
+                    { path: PATHS.app.transactions, element: <Transactions /> },
+                    { path: PATHS.app.budgets, element: <Budgets /> },
+                    { path: PATHS.app.profile, element: <Profile /> },
+                ],
+            },
+        ],
+    },
+
+    { path: '*', element: <NotFound /> },
+]);
+
+export const AppRoutes: React.FC = () => <RouterProvider router={router} />;
