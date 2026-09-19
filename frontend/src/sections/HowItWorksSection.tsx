@@ -1,6 +1,5 @@
-import React from 'react';
 import { Card } from '../components/ui/Card';
-import { UploadCloud, Cpu, PieChart } from 'lucide-react';
+import { FileInput, Cpu, PieChart } from 'lucide-react';
 
 interface Step {
     number: string;
@@ -10,33 +9,66 @@ interface Step {
 }
 
 const steps: Step[] = [
-    { number: '01', icon: UploadCloud, title: 'Upload PDF', desc: 'Drag and drop bank statements securely with instant file validation.' },
-    { number: '02', icon: Cpu, title: 'AI Categorization', desc: 'Our LLM pipeline parses complex tables and categorizes every entry.' },
-    { number: '03', icon: PieChart, title: 'Analytics Dashboard', desc: 'View intuitive visualizations of budgets, spending patterns, and alerts.' },
+    {
+        number: '01',
+        icon: FileInput,
+        title: 'Paste or upload',
+        desc: 'Paste your statement text directly, or drag in a PDF statement.',
+    },
+    {
+        number: '02',
+        icon: Cpu,
+        title: 'AI extraction & review',
+        desc: 'A local model extracts each transaction — you check and edit anything before saving.',
+    },
+    {
+        number: '03',
+        icon: PieChart,
+        title: 'Dashboard',
+        desc: 'See your spending broken down by category and tracked against your monthly budgets.',
+    },
 ];
 
 export const HowItWorksSection: React.FC = () => {
     return (
-        <section className="py-16 border-t border-border/60">
-            <div className="text-center space-y-3 mb-12">
-                <span className="text-xs font-mono font-bold uppercase tracking-widest text-primary">Simple Workflow</span>
-                <h2 className="text-3xl font-bold font-sans text-foreground">How it works</h2>
+        <section
+            id="how-it-works"
+            className="w-full border-t border-border/60 py-16"
+        >
+            <div className="mb-12 text-center space-y-3">
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-primary">
+                    Simple Workflow
+                </span>
+
+                <h2 className="text-3xl font-bold font-sans text-foreground">
+                    How it works
+                </h2>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8 relative">
-                {steps.map((s) => (
-                    <Card key={s.number} className="relative p-6 space-y-4 hover:border-primary/40 transition-all border-border/80">
-                        <div className="flex justify-between items-center">
-                            <div className="p-3 rounded-xl bg-primary/10 text-primary">
-                                <s.icon className="w-6 h-6" />
+            <div className="grid w-full gap-8 md:grid-cols-3">
+                {steps.map((step) => (
+                    <Card
+                        key={step.number}
+                        className="relative min-w-0 p-6 space-y-4 border-border/80 transition-all hover:border-primary/40"
+                    >
+                        <div className="flex items-center justify-between gap-4">
+                            <div className="shrink-0 rounded-xl bg-primary/10 p-3 text-primary">
+                                <step.icon className="h-6 w-6" />
                             </div>
-                            <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-md bg-muted text-muted-foreground">
-                                STEP {s.number}
+
+                            <span className="shrink-0 rounded-md bg-muted px-2.5 py-1 font-mono text-xs font-bold text-muted-foreground">
+                                STEP {step.number}
                             </span>
                         </div>
-                        <div className="space-y-1">
-                            <h3 className="font-semibold text-lg text-card-foreground">{s.title}</h3>
-                            <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+
+                        <div className="min-w-0 space-y-1">
+                            <h3 className="font-semibold text-lg text-card-foreground">
+                                {step.title}
+                            </h3>
+
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                                {step.desc}
+                            </p>
                         </div>
                     </Card>
                 ))}
