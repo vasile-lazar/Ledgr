@@ -4,10 +4,11 @@ import { TrendingUp } from "lucide-react";
 import type { Page } from "../data/mock";
 
 interface NotFoundProps {
-  onNavigate: (page: Page) => void;
+  onNavigate?: (page: Page) => void;
 }
 
 export default function NotFound({ onNavigate }: NotFoundProps) {
+  const navigate = onNavigate ?? (() => undefined);
   return (<> <div className="fixed right-4 top-4 z-50"><ThemeToggle /></div>
     <div className="min-h-screen bg-background flex flex-col items-center justify-center text-center p-8">
       <div className="relative mb-8">
@@ -18,15 +19,15 @@ export default function NotFound({ onNavigate }: NotFoundProps) {
           </div>
         </div>
       </div>
-      <h1 className="font-display text-[28px] font-light text-foreground mb-3 tracking-tight">Pagina nu a fost găsită</h1>
+      <h1 className="font-display text-[28px] font-light text-foreground mb-3 tracking-tight">Page not found</h1>
       <p className="text-[14px] text-muted-foreground max-w-xs leading-relaxed mb-8">
-        Poate că ai urmat un link vechi sau ai tastat greșit adresa.
+        The page may have moved, or the address may be incorrect.
       </p>
       <Button variant="primary" size="custom"
-        onClick={() => onNavigate("dashboard")}
+        onClick={() => navigate("dashboard")}
         className="px-6 py-3 rounded-xl text-[14px] font-medium"
       >
-        Înapoi la Dashboard
+        Back to Dashboard
       </Button>
     </div>
 </>

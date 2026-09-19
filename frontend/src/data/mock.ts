@@ -107,9 +107,9 @@ export const statements = [
 ];
 
 export const notifications = [
-  { id: 1, type: "warning", title: "Budget depășit", message: "Ai depășit bugetul de Shopping cu 310 RON (110%)", time: "acum 2 ore", read: false },
-  { id: 2, type: "success", title: "Extras procesat", message: "BT_Statement_Ian_2024.pdf a fost procesat cu succes — 43 tranzacții", time: "acum 5 ore", read: false },
-  { id: 3, type: "info", title: "Raport lunar disponibil", message: "Raportul tău pentru Ianuarie 2024 este gata", time: "ieri", read: true },
-  { id: 4, type: "warning", title: "Tranzacție mare detectată", message: "Plată de 2.300 RON la eMAG detectată", time: "3 Ian", read: true },
-  { id: 5, type: "success", title: "Obiectiv de economii atins", message: "Ai economisit 3.460 RON luna aceasta — obiectiv atins!", time: "15 Ian", read: true },
+  { id: 1, type: "warning", title: "Budget exceeded", message: "You exceeded your Shopping budget by 310 RON (110%)", time: "2 hours ago", read: false },
+  { id: 2, type: "success", title: "Statement processed", message: "BT_Statement_Ian_2024.pdf was processed successfully — 43 transactions", time: "5 hours ago", read: false },
+  { id: 3, type: "info", title: "Monthly report available", message: "Your report for January 2024 is ready", time: "yesterday", read: true },
+  { id: 4, type: "warning", title: "Large transaction detected", message: "Payment of 2,300 RON at eMAG detected", time: "Jan 3", read: true },
+  { id: 5, type: "success", title: "Savings goal reached", message: "You saved 3,460 RON this month — goal reached!", time: "Jan 15", read: true },
 ];
