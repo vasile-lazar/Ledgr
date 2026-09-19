@@ -8,8 +8,9 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { PATHS } from '../../routes/paths';
+import { useAxios } from '../../axios'; 
 
 interface NavItem {
     label: string;
@@ -26,6 +27,15 @@ const navItems: NavItem[] = [
 ];
 
 export const Sidebar: React.FC = () => {
+    const navigate = useNavigate();
+    const { setToken } = useAxios();
+
+    const handleLogout = () => {
+        setToken(undefined);
+        localStorage.removeItem('token');
+        navigate(PATHS.public.landing, { replace: true });
+    };
+
     return (
         <aside className="w-16 md:w-60 bg-sidebar border-r border-sidebar-border flex flex-col fixed inset-y-0 left-0 z-20 transition-colors">
             <div className="p-6 border-b border-sidebar-border flex items-center justify-center">
@@ -56,16 +66,16 @@ export const Sidebar: React.FC = () => {
             </nav>
 
             <div className="p-2 md:p-4 border-t border-sidebar-border">
-                <NavLink
+                <button
+                    type="button"
+                    onClick={handleLogout}
                     aria-label="Log out"
-                    to={PATHS.public.landing}
-                    className="w-full flex items-center gap-3 text-left px-2 md:px-4 py-2 text-sm text-muted-foreground hover:text-destructive transition-colors"
+                    className="w-full flex items-center gap-3 text-left px-2 md:px-4 py-2 text-sm text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
                 >
-                    <LogOut size={18} aria-hidden="true" /> <span className="hidden md:inline">Log out</span>
-                </NavLink>
+                    <LogOut size={18} aria-hidden="true" />
+                    <span className="hidden md:inline">Log out</span>
+                </button>
             </div>
         </aside>
     );
 };
-
-export default Sidebar;

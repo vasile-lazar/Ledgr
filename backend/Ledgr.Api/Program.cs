@@ -13,8 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 var secret = Environment.GetEnvironmentVariable("JWT_SECRET")
              ?? throw new Exception("JWT_SECRET missing");
 
-var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "Ledgr";
-var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "Ledgr";
+var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "ledgr";
+var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "ledgr";
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
