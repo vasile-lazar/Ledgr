@@ -6,6 +6,7 @@ import type {
     InternalAxiosRequestConfig,
 } from "axios";
 
+import { AxiosHeaders } from "axios"
 import { AxiosContext } from "./context";
 import { createApi } from "./create-api";
 import type {
@@ -133,7 +134,7 @@ export function AxiosProvider({
     useEffect(() => {
         const reqId = client.interceptors.request.use(
             (config: InternalAxiosRequestConfig) => {
-                config.headers = config.headers ?? {};
+                config.headers = config.headers ?? new AxiosHeaders();
 
                 config.headers["X-User-Time-Zone"] = getTimeZone();
 
@@ -176,7 +177,7 @@ export function AxiosProvider({
 
                     try {
                         const newToken = await refreshToken();
-                        original.headers = original.headers ?? {};
+                        original.headers = original.headers ?? new AxiosHeaders();
                         (original.headers as any).Authorization = buildAuthHeader(newToken);
                         return client(original);
                     } catch (e) {
