@@ -1,6 +1,6 @@
-﻿import { useState, useCallback } from 'react';
-import { useAxios } from '../axios';
-import type { ParsedTransaction, Statement } from '../types';
+﻿import {useCallback, useEffect, useState} from 'react';
+import {useAxios} from '../axios';
+import type {ParsedTransaction, Statement} from '../types';
 
 export function useStatements() {
     const { api } = useAxios();
@@ -10,8 +10,7 @@ export function useStatements() {
         if (!api) return [];
         setIsUploading(true);
         try {
-            const res = await api.post('/api/statements/upload/text', { statementText });
-            return res;
+            return await api.post('/api/statements/upload/text', {statementText});
         } finally {
             setIsUploading(false);
         }
@@ -23,10 +22,9 @@ export function useStatements() {
         try {
             const formData = new FormData();
             formData.append('file', file);
-            const res = await api.post('/api/statements/upload/pdf', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+            return await api.post('/api/statements/upload/pdf', formData, {
+                headers: {'Content-Type': 'multipart/form-data'},
             });
-            return res;
         } finally {
             setIsUploading(false);
         }
@@ -49,6 +47,11 @@ export function useStatements() {
             setIsLoadingStatements(false);
         }
     }, [api]);
+    
+    useEffect(() => {
+        if (!api) return;
+        refreshStatements()
+    }, [refreshStatements]);
 
     return { uploadText, uploadPdf, accept, isUploading, statements, isLoadingStatements, refreshStatements };
 }

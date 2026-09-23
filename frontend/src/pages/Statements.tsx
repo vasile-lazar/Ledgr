@@ -1,8 +1,7 @@
 import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {FileText, MoreHorizontal, Eye} from 'lucide-react';
+import {FileText} from 'lucide-react';
 import {Button} from '../components/ui/Button';
-import {ActionMenu, type ActionMenuItem} from '../components/ui/ActionMenu';
 import {Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableEmptyState} from '../components/ui/Table';
 import {useStatements} from '../hooks/useStatements';
 import {PATHS} from '../routes/paths';
@@ -10,7 +9,6 @@ import {PATHS} from '../routes/paths';
 export const Statements: React.FC = () => {
     const navigate = useNavigate();
     const {statements, isLoadingStatements} = useStatements();
-    const [openMenu, setOpenMenu] = useState<number | null>(null);
     const [page, setPage] = useState(1);
     const perPage = 6;
 
@@ -63,29 +61,6 @@ export const Statements: React.FC = () => {
                                     </TableCell>
                                     <TableCell className="font-mono text-muted-foreground">{stmt.date}</TableCell>
                                     <TableCell className="font-mono text-foreground">{stmt.transactions}</TableCell>
-                                    <TableCell className="text-right relative">
-                                        <Button
-                                            variant="unstyled" size="custom"
-                                            aria-label={`Actions for statement ${stmt.id}`}
-                                            aria-expanded={openMenu === stmt.id}
-                                            onClick={() => setOpenMenu(openMenu === stmt.id ? null : stmt.id)}
-                                            className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted"
-                                        >
-                                            <MoreHorizontal size={15}/>
-                                        </Button>
-
-                                        <ActionMenu
-                                            open={openMenu === stmt.id}
-                                            items={[
-                                                {
-                                                    label: 'View transactions', icon: <Eye size={13}/>, onClick: () => {
-                                                        navigate(PATHS.app.transactions);
-                                                        setOpenMenu(null);
-                                                    }
-                                                },
-                                            ] as ActionMenuItem[]}
-                                        />
-                                    </TableCell>
                                 </TableRow>
                             ))
                         )}

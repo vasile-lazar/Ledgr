@@ -17,7 +17,10 @@ export function useBudgets() {
         }
     }, [api]);
 
-    useEffect(() => { refresh(); }, [refresh]);
+    useEffect(() => {
+        if (!api) return;
+        refresh();
+        }, [refresh]);
 
     const create = useCallback(async (category: TransactionCategory, amount: number) => {
         if (!api) return;

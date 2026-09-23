@@ -17,7 +17,10 @@ export function useTransactions() {
         }
     }, [api]);
 
-    useEffect(() => { refresh(); }, [refresh]);
+    useEffect(() => { 
+        if (!api) return;
+        refresh();
+        }, [refresh]);
 
     return { transactions, isLoading, refresh };
 }
