@@ -1,78 +1,17 @@
-import { Card } from '../components/ui/Card';
-import { FileInput, Cpu, PieChart } from 'lucide-react';
+import { FileInput, ScanLine, ChartNoAxesCombined, ArrowUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { PATHS } from '../routes/paths';
 
-interface Step {
-    number: string;
-    icon: React.ElementType;
-    title: string;
-    desc: string;
-}
-
-const steps: Step[] = [
-    {
-        number: '01',
-        icon: FileInput,
-        title: 'Paste or upload',
-        desc: 'Paste your statement text directly, or drag in a PDF statement.',
-    },
-    {
-        number: '02',
-        icon: Cpu,
-        title: 'AI extraction & review',
-        desc: 'A local model extracts each transaction — you check and edit anything before saving.',
-    },
-    {
-        number: '03',
-        icon: PieChart,
-        title: 'Dashboard',
-        desc: 'See your spending broken down by category and tracked against your monthly budgets.',
-    },
+const steps = [
+    { number: '01', icon: FileInput, title: 'Bring your statement', desc: 'Drop in a PDF or paste your statement text to get started.' },
+    { number: '02', icon: ScanLine, title: 'Review the details', desc: 'Let local AI do the sorting. Check and adjust before you save.' },
+    { number: '03', icon: ChartNoAxesCombined, title: 'Find your perspective', desc: 'Explore your spending, set a budget, and plan your next step.' },
 ];
 
-export const HowItWorksSection: React.FC = () => {
-    return (
-        <section
-            id="how-it-works"
-            className="w-full border-t border-border/60 py-16"
-        >
-            <div className="mb-12 text-center space-y-3">
-                <span className="text-xs font-mono font-bold uppercase tracking-widest text-primary">
-                    Simple Workflow
-                </span>
-
-                <h2 className="text-3xl font-bold font-sans text-foreground">
-                    How it works
-                </h2>
-            </div>
-
-            <div className="grid w-full gap-8 md:grid-cols-3">
-                {steps.map((step) => (
-                    <Card
-                        key={step.number}
-                        className="relative min-w-0 p-6 space-y-4 border-border/80 transition-all hover:border-primary/40"
-                    >
-                        <div className="flex items-center justify-between gap-4">
-                            <div className="shrink-0 rounded-xl bg-primary/10 p-3 text-primary">
-                                <step.icon className="h-6 w-6" />
-                            </div>
-
-                            <span className="shrink-0 rounded-md bg-muted px-2.5 py-1 font-mono text-xs font-bold text-muted-foreground">
-                                STEP {step.number}
-                            </span>
-                        </div>
-
-                        <div className="min-w-0 space-y-1">
-                            <h3 className="font-semibold text-lg text-card-foreground">
-                                {step.title}
-                            </h3>
-
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                                {step.desc}
-                            </p>
-                        </div>
-                    </Card>
-                ))}
-            </div>
-        </section>
-    );
-};
+export const HowItWorksSection: React.FC = () => (
+    <section id="how-it-works" className="landing-workflow" aria-labelledby="workflow-title">
+        <div className="landing-container"><div className="landing-workflow-heading"><div><span className="landing-eyebrow">Less effort. More insight.</span><h2 id="workflow-title">From statement to understanding.<br />In three simple steps.</h2></div><Link to={PATHS.app.upload} className="landing-text-link">Try it for yourself <ArrowUpRight size={18} aria-hidden="true" /></Link></div>
+            <div className="landing-steps">{steps.map(({ number, icon: Icon, title, desc }) => <article key={number}><div className="landing-step-top"><Icon size={26} strokeWidth={1.5} aria-hidden="true" /><span>{number}</span></div><h3>{title}</h3><p>{desc}</p></article>)}</div>
+        </div>
+    </section>
+);
